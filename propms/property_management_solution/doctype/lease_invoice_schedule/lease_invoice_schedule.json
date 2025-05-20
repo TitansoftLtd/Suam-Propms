@@ -13,6 +13,7 @@
   "lease_item_name",
   "document_type",
   "invoice_number",
+  "column_break_frxf",
   "sales_order_number",
   "qty",
   "rate",
@@ -114,17 +115,25 @@
    "fieldtype": "Select",
    "label": "Document Type",
    "options": "\nSales Invoice\nSales Order"
+  },
+  {
+   "fieldname": "column_break_frxf",
+   "fieldtype": "Column Break"
   }
  ],
+ "grid_page_length": 50,
  "istable": 1,
  "links": [],
- "modified": "2022-05-28 15:13:40.233162",
+ "modified": "2025-05-20 13:20:41.408412",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Lease Invoice Schedule",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

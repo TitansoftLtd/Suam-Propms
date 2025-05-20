@@ -49,7 +49,7 @@ frappe.ui.form.on('Lease', {
 var make_lease_invoice_schedule = function(frm){
 	var doc = frm.doc;
 	frappe.call({
-		method: 		"propms.property_management_solution.doctype.lease.lease.make_lease_invoice_schedule",
+		method: "propms.property_management_solution.doctype.lease.lease.make_lease_invoice_schedule",
 		args: {leasedoc: doc.name},
 		callback: function(){
 			cur_frm.reload_doc();
