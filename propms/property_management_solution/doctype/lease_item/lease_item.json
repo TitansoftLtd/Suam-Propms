@@ -29,7 +29,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Lease Item",
-   "options": "Item"
+   "options": "Item",
+   "reqd": 1
   },
   {
    "columns": 1,
@@ -37,7 +38,8 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Frequency",
-   "options": "Monthly\nBi-Monthly\nQuarterly\nAnnually\n6 months"
+   "options": "Monthly\nBi-Monthly\nQuarterly\nAnnually\n6 months",
+   "reqd": 1
   },
   {
    "columns": 1,
@@ -45,7 +47,8 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "options": "currency_code"
+   "options": "currency_code",
+   "reqd": 1
   },
   {
    "default": "KES",
@@ -69,7 +72,8 @@
    "fieldname": "paid_by",
    "fieldtype": "Link",
    "label": "Paid By",
-   "options": "Customer"
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "invoice_item_group",
@@ -94,14 +98,16 @@
    "fieldname": "start_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Start Date"
+   "label": "Start Date",
+   "reqd": 1
   },
   {
    "columns": 2,
    "fieldname": "end_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "End Date"
+   "label": "End Date",
+   "reqd": 1
   },
   {
    "columns": 1,
@@ -124,7 +130,7 @@
  "grid_page_length": 50,
  "istable": 1,
  "links": [],
- "modified": "2025-05-20 16:14:06.129224",
+ "modified": "2025-05-20 17:02:02.240438",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Lease Item",
