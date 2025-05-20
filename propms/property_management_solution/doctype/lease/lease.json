@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_import": 1,
  "autoname": "format:{property}-{#####}",
  "creation": "2018-05-01 22:11:38.457329",
@@ -320,7 +321,8 @@
    "options": "\nActive\nClosed\nNot Materialized\nRenewal to Previous Lease\nAdendum to Previous Lease\nVacating"
   }
  ],
- "modified": "2021-06-09 17:20:19.067591",
+ "links": [],
+ "modified": "2025-05-20 15:28:58.654029",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Lease",
@@ -351,7 +353,9 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

@@ -43,8 +43,39 @@ frappe.ui.form.on('Lease', {
 				}
 			}
 		});
-	}
+	},
+	lease_customer: function (frm) {
+        // Update existing child rows when lease_customer is changed
+        (frm.doc.lease_item || []).forEach(function (d) {
+            d.paid_by = frm.doc.lease_customer;
+        });
+        frm.refresh_field('lease_item');
+    },
+
+    lease_item_add: function (frm, cdt, cdn) {
+        // Set paid_by on a newly added row
+        if (frm.doc.lease_customer) {
+            frappe.model.set_value(cdt, cdn, 'paid_by', frm.doc.lease_customer);
+        }
+    }
 });
+
+frappe.ui.form.on('Lease Item', {
+    amount: function(frm, cdt, cdn) {
+        update_invoice_amount(frm, cdt, cdn);
+    },
+    increment: function(frm, cdt, cdn) {
+        update_invoice_amount(frm, cdt, cdn);
+    }
+});
+
+function update_invoice_amount(frm, cdt, cdn) {
+    var row = locals[cdt][cdn];
+    if (row.amount && row.increment != null) {
+        row.invoice_amount = row.amount + (row.amount * row.increment / 100);
+        frm.refresh_field('lease_item');
+    }
+}
 
 var make_lease_invoice_schedule = function(frm){
 	var doc = frm.doc;
