@@ -145,12 +145,8 @@ def leaseInvoiceAutoCreate():
         lease_invoice_schedule_list = []
         item_dict = []
         item_json = {}
-        # frappe.msgprint(str(lease_invoice))
+        
         for row in lease_invoice:
-            # frappe.msgprint(str(invoice_item.name) + " " + str(invoice_item.lease_item))
-            # Check if same lease, customer, invoice_item_group and date_to_invoice.
-            # Also should not be 1st row of the list
-            # frappe.msgprint(row.parent + " -- " + prev_parent + " -- " + row.paid_by + " -- " + prev_customer + " -- " + row.invoice_item_group + " -- " + prev_invoice_item_group + " -- " + str(row.date_to_invoice) + " -- " + str(prev_date_to_invoice) + " -- " + row.currency + " -- " + prev_currency)
             if (
                 not (
                     row.parent == prev_parent
@@ -160,7 +156,6 @@ def leaseInvoiceAutoCreate():
                 )
                 and row_num != 1
             ):
-                # frappe.msgprint("Creating invoice for: " + str(item_dict))
                 res = makeInvoice(
                     invoice_item.date_to_invoice,
                     json.dumps(item_dict),
@@ -171,12 +166,9 @@ def leaseInvoiceAutoCreate():
                     invoice_item.schedule_start_date,
                     doctype=invoice_item.document_type,
                 )
-                # frappe.msgprint("Result: " + str(res))
                 if res:
                     # Loop through all list invoice names that were created and update them with same invoice number
                     for lease_invoice_schedule_name in lease_invoice_schedule_list:
-                        # frappe.msgprint("---")
-                        # frappe.msgprint("The lease invoice schedule " + str(lease_invoice_schedule_name) + " would be updated with invoice number " + str(res.name) )
                         frappe.db.set_value(
                             "Lease Invoice Schedule",
                             lease_invoice_schedule_name,
@@ -238,7 +230,6 @@ def leaseInvoiceAutoCreate():
         if res:
             # Loop through all list invoice names that were created and update them with same invoice number
             for lease_invoice_schedule_name in lease_invoice_schedule_list:
-                # frappe.msgprint("The lease invoice schedule " + str(lease_invoice_schedule_name) + " would be updated with invoice number " + str(res.name))
                 frappe.db.set_value(
                     "Lease Invoice Schedule",
                     lease_invoice_schedule_name,
