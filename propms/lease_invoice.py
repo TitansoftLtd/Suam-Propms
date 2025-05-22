@@ -26,60 +26,66 @@ def app_error_log(title, error):
 @frappe.whitelist()
 def makeInvoice(
     date,
-    customer,
+    lease_name,
     items,
     currency=None,
     lease=None,
     lease_item=None,
     qty=None,
     schedule_start_date=None,
-    doctype="Sales Invoice",  # Allow to create Sales Invoice or Sales Order
+    doctype="Sales Invoice",
 ):
     """Create sales invoice from lease invoice schedule."""
     if not doctype:
         doctype = "Sales Invoice"
     try:
+        if not lease_name:
+            frappe.throw(_("Please select a Lease {0}").format(lease_name))
+
+        # fetch customer from lease
+        customer = frappe.get_value("Lease", lease_name, "customer")
         if not customer:
-            frappe.throw(_("Please select a Customer in Lease {0}").format(lease))
+            frappe.throw(_("Please select a Customer in Lease {0}").format(lease_name))
+
         company = frappe.get_value("Lease", lease, "company")
-        default_tax_template = frappe.get_value(
-            "Company", company, "default_tax_template"
-        )
+        default_tax_template = frappe.get_value("Company", company, "default_tax_template")
+
         if qty != int(qty):
-            # it means the last invoice for the lease that may have fraction of months
+            # Fractional month – use lease end date
             subs_end_date = frappe.get_value("Lease", lease, "end_date")
         else:
-            # month qty is not fractional
+            # Whole months – calculate end date
             subs_end_date = add_days(add_months(schedule_start_date, qty), -1)
-        doc = frappe.get_doc(
-            dict(
-                doctype=doctype,
-                company=company,
-                posting_date=today(),
-                items=json.loads(items),
-                customer=str(customer),
-                due_date=getDueDate(today(), str(customer)),
-                currency=currency,
-                lease=lease,
-                lease_item=lease_item,
-                taxes_and_charges=default_tax_template,
-                from_date=schedule_start_date,
-                to_date=subs_end_date,
-                cost_center=getCostCenter(lease),
-            )
-        )
+
+        doc = frappe.get_doc(dict(
+            doctype=doctype,
+            company=company,
+            posting_date=today(),
+            items=json.loads(items),
+            customer=str(customer),
+            due_date=getDueDate(today(), str(customer)),
+            currency=currency,
+            lease=lease,
+            lease_item=lease_item,
+            taxes_and_charges=default_tax_template,
+            from_date=schedule_start_date,
+            to_date=subs_end_date,
+            cost_center=getCostCenter(lease),
+        ))
+
         if doc.doctype == "Sales Order":
             doc.delivery_date = doc.to_date
         doc.insert()
+
         if doc.taxes_and_charges:
             getTax(doc)
         doc.calculate_taxes_and_totals()
-        # frappe.msgprint("Department " + str(sales_invoice.department))
         doc.save()
+
         return doc
+
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
-
 
 @frappe.whitelist()
 def getTax(sales_invoice):
@@ -158,6 +164,7 @@ def leaseInvoiceAutoCreate():
             ):
                 res = makeInvoice(
                     invoice_item.date_to_invoice,
+                    invoice_item.parent,
                     json.dumps(item_dict),
                     invoice_item.currency,
                     invoice_item.parent,
@@ -219,6 +226,7 @@ def leaseInvoiceAutoCreate():
         # Create the last invoice
         res = makeInvoice(
             invoice_item.date_to_invoice,
+            invoice_item.parent,
             json.dumps(item_dict),
             invoice_item.currency,
             invoice_item.parent,
