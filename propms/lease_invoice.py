@@ -131,15 +131,13 @@ def leaseInvoiceAutoCreate():
                 "parent",
                 "invoice_item_group",
                 "lease_item",
-                "paid_by",
                 "currency",
             ],
-            order_by="parent, paid_by, invoice_item_group, date_to_invoice, currency, lease_item",
+            order_by="parent, invoice_item_group, date_to_invoice, currency, lease_item",
         )
         # frappe.msgprint("Lease being generated for " + str(lease_invoice))
         row_num = 1  # to identify the 1st line of the list
         prev_parent = ""
-        prev_customer = ""
         prev_invoice_item_group = ""
         prev_date_to_invoice = ""
         lease_invoice_schedule_name = ""
@@ -156,7 +154,6 @@ def leaseInvoiceAutoCreate():
             if (
                 not (
                     row.parent == prev_parent
-                    and row.paid_by == prev_customer
                     and row.invoice_item_group == prev_invoice_item_group
                     and row.date_to_invoice == prev_date_to_invoice
                     and row.currency == prev_currency
@@ -166,7 +163,6 @@ def leaseInvoiceAutoCreate():
                 # frappe.msgprint("Creating invoice for: " + str(item_dict))
                 res = makeInvoice(
                     invoice_item.date_to_invoice,
-                    invoice_item.paid_by,
                     json.dumps(item_dict),
                     invoice_item.currency,
                     invoice_item.parent,
@@ -224,7 +220,6 @@ def leaseInvoiceAutoCreate():
 
             # Remember the values for the next round
             prev_parent = invoice_item.parent
-            prev_customer = invoice_item.paid_by
             prev_invoice_item_group = invoice_item.invoice_item_group
             prev_date_to_invoice = invoice_item.date_to_invoice
             prev_currency = invoice_item.currency
@@ -232,7 +227,6 @@ def leaseInvoiceAutoCreate():
         # Create the last invoice
         res = makeInvoice(
             invoice_item.date_to_invoice,
-            invoice_item.paid_by,
             json.dumps(item_dict),
             invoice_item.currency,
             invoice_item.parent,
